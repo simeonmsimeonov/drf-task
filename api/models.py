@@ -20,7 +20,6 @@ class Order(models.Model):
     date = models.DateField()
     products = models.ManyToManyField(Product, related_name='products')
 
-
     def short_date(self):
         month = self.date.strftime('%b')
         year = self.date.strftime('%Y')

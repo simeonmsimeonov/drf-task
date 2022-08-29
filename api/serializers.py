@@ -3,6 +3,7 @@ from rest_framework import serializers
 from api.models import Order, Product
 
 
+
 class MyProductField(serializers.RelatedField):
     def to_representation(self, value):
         result = {
@@ -33,7 +34,6 @@ class MyProductField(serializers.RelatedField):
         return model.objects.get(id=data)
 
 
-
 class StatsSerializer(serializers.Serializer):
     month = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
@@ -42,7 +42,8 @@ class StatsSerializer(serializers.Serializer):
         metric = self.context['metric']
         date_start = self.context['date_start']
         date_end = self.context['date_end']
-        queryset = Order.objects.filter(date__range=[date_start, date_end])
+        queryset = Order.objects.filter(date__range=[date_start, date_end]).distinct()
+
         if metric == "price":
             result = sum([prod.price for order in queryset for prod in order.products.all()])
             return result

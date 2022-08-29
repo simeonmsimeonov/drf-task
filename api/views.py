@@ -4,7 +4,7 @@ from api.models import Order, Product
 from api.serializers import OrderSerializer, ProductSerializer, StatsSerializer
 from django_filters import DateTimeFilter, ChoiceFilter, FilterSet
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
+
 
 FILTER_CHOICES = (
     ('price', 'price'),
@@ -36,7 +36,7 @@ class StatsFilter(FilterSet):
     metric = ChoiceFilter(field_name='value', choices=FILTER_CHOICES, label="metric", method="filter_metric")
 
     def filter_metric(self, queryset, name, value):
-        return queryset.distinct()
+        return self.queryset
 
     class Meta:
         model = Order
@@ -61,7 +61,6 @@ class StatsViewSet(viewsets.ReadOnlyModelViewSet):
         date_start = self.request.query_params.get('date_start')
         date_end = self.request.query_params.get('date_end')
         queryset = Order.objects.filter(date__range=[date_start, date_end])
-
         return queryset
 
 
